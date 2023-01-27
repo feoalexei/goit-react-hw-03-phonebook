@@ -6,6 +6,8 @@ import Filter from './Filter';
 import { Box } from './Box';
 import { AppContainer } from './App.styled';
 
+const CONTACTS_KEY = 'contacts';
+
 export class App extends Component {
   state = {
     contacts: [
@@ -16,6 +18,21 @@ export class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem(CONTACTS_KEY);
+    const parsedContacts = JSON.parse(contacts);
+
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem(CONTACTS_KEY, JSON.stringify(this.state.contacts));
+    }
+  }
 
   addContact = contactFormInput => {
     const newContact = {
